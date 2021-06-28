@@ -5,8 +5,8 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
-static int borderpx = 2;
+static char *font = "JetBrains Mono:pixelsize=15:antialias=true:autohint=true";
+static int borderpx = 0;
 
 /*
  * What program is execed by st depends of these precedence rules:
@@ -44,7 +44,7 @@ static unsigned int tripleclicktimeout = 600;
 int allowaltscreen = 1;
 
 /* allow certain non-interactive (insecure) window operations such as:
-   setting the clipboard text */
+ * setting the clipboard text */
 int allowwindowops = 0;
 
 /*
@@ -87,7 +87,7 @@ char *termname = "st-256color";
  *
  * Secondly make sure your kernel is not expanding tabs. When running `stty
  * -a` »tab0« should appear. You can tell the terminal to not expand tabs by
- *  running following command:
+ * running following command:
  *
  *	stty tabs
  */
@@ -96,30 +96,30 @@ unsigned int tabspaces = 8;
 /* Terminal colors (16 first used in escape sequence) */
 static const char *colorname[] = {
 	/* 8 normal colors */
-	"black",
-	"red3",
-	"green3",
-	"yellow3",
-	"blue2",
-	"magenta3",
-	"cyan3",
-	"gray90",
+	"#5c6370",
+	"#e06c75",
+	"#98c379",
+	"#e5c07b",
+	"#61afef",
+	"#c678dd",
+	"#56b6c2",
+	"#828997",
 
 	/* 8 bright colors */
-	"gray50",
-	"red",
-	"green",
-	"yellow",
-	"#5c5cff",
-	"magenta",
-	"cyan",
-	"white",
+	"#666666",
+	"#d54e53",
+	"#b9ca4a",
+	"#e7c547",
+	"#7aa6da",
+	"#c397d8",
+	"#70c0b1",
+	"#eaeaea",
 
 	[255] = 0,
 
 	/* more colors can be added after 255 to use with DefaultXX */
-	"#cccccc",
-	"#555555",
+	"#282c34", /* background */
+	"#abb2bf", /* foreground */
 };
 
 
@@ -127,10 +127,10 @@ static const char *colorname[] = {
  * Default colors (colorname index)
  * foreground, background, cursor, reverse cursor
  */
-unsigned int defaultfg = 7;
-unsigned int defaultbg = 0;
-static unsigned int defaultcs = 256;
-static unsigned int defaultrcs = 257;
+unsigned int defaultfg = 257;
+unsigned int defaultbg = 256;
+static unsigned int defaultcs = 257;
+static unsigned int defaultrcs = 256;
 
 /*
  * Default shape of cursor
@@ -173,8 +173,10 @@ static uint forcemousemod = ShiftMask;
  * Beware that overloading Button1 will disable the selection.
  */
 static MouseShortcut mshortcuts[] = {
-	/* mask                 button   function        argument       release */
-	{ XK_ANY_MOD,           Button2, selpaste,       {.i = 0},      1 },
+	/* mask                 button   function        argument                                    release */
+	{ XK_ANY_MOD,           Button4, kscrollup,      {.i = 3},/*3 is amount of lines scrolled*/  0, /* !alt */ -1 },
+	{ XK_ANY_MOD,           Button5, kscrolldown,    {.i = 3},/*3 is amount of lines scrolled*/  0, /* !alt */ -1 },
+	{ XK_ANY_MOD,           Button2, selpaste,       {.i = 0},                                   1 },
 	{ ShiftMask,            Button4, ttysend,        {.s = "\033[5;2~"} },
 	{ XK_ANY_MOD,           Button4, ttysend,        {.s = "\031"} },
 	{ ShiftMask,            Button5, ttysend,        {.s = "\033[6;2~"} },
@@ -199,6 +201,8 @@ static Shortcut shortcuts[] = {
 	{ TERMMOD,              XK_Y,           selpaste,       {.i =  0} },
 	{ ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
 	{ TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
+	{ ShiftMask,            XK_Page_Up,     kscrollup,      {.i = -1} },
+	{ ShiftMask,            XK_Page_Down,   kscrolldown,    {.i = -1} },
 };
 
 /*
@@ -210,7 +214,7 @@ static Shortcut shortcuts[] = {
  * appkey value:
  * * 0: no value
  * * > 0: keypad application mode enabled
- * *   = 2: term.numlock = 1
+ * * = 2: term.numlock = 1
  * * < 0: keypad application mode disabled
  * appcursor value:
  * * 0: no value
@@ -229,7 +233,7 @@ static Shortcut shortcuts[] = {
 static KeySym mappedkeys[] = { -1 };
 
 /*
- * State bits to ignore when matching key or button events.  By default,
+ * State bits to ignore when matching key or button events. By default,
  * numlock (Mod2Mask) and keyboard layout (XK_SWITCH_MOD) are ignored.
  */
 static uint ignoremod = Mod2Mask|XK_SWITCH_MOD;
