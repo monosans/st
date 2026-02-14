@@ -3466,6 +3466,11 @@ check_control_code:
 			return;
 		#if SIXEL_PATCH
 		} else if (term.esc & ESC_DCS) {
+			/* Skip if DCS escape sequence buffer is full */
+			if (csiescseq.len >= sizeof(csiescseq.buf) - 1) {
+				return;
+			}
+
 			csiescseq.buf[csiescseq.len++] = u;
 			if (BETWEEN(u, 0x40, 0x7E)
 					|| csiescseq.len >= \
