@@ -3332,6 +3332,7 @@ eschandle(uchar ascii)
 		resettitle();
 		xloadcols();
 		xsetmode(0, MODE_HIDE);
+		xsetmode(0, MODE_BRCKTPASTE);
 		#if SCROLLBACK_PATCH && !REFLOW_PATCH
 		if (!IS_SET(MODE_ALTSCREEN)) {
 			term.scr = 0;
