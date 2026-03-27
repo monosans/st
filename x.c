@@ -2319,7 +2319,11 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
 		}
 
 		XGCValues ugcv = {
+			#if ALPHA_PATCH
+			.foreground = linecolor | 0xff << 24,
+			#else
 			.foreground = linecolor,
+			#endif // ALPHA_PATCH
 			.line_width = wlw,
 			.line_style = LineSolid,
 			.cap_style = CapNotLast
